@@ -1,0 +1,16 @@
+# Base configuration for local development.
+# TODO: Replace placeholders with validated settings objects.
+
+project:
+  name: desktop-control-local-model
+  environment: local
+
+paths:
+  sandbox_dir: sandbox
+  data_dir: data
+  artifacts_dir: artifacts
+
+safety:
+  allow_live_desktop_control: false
+  allow_credentials_handling: false
+  require_manual_capture_start: true

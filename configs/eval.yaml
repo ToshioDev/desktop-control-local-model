@@ -1,0 +1,7 @@
+# Evaluation configuration stub.
+# TODO: Wire to offline fixtures and reporting outputs.
+
+evaluation:
+  enabled: false
+  dataset_split: val
+  report_dir: artifacts/reports
