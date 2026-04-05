@@ -59,6 +59,21 @@ def test_validate_example_rejects_invalid_image_path_type() -> None:
         raise AssertionError("Expected TypeError for invalid image_path type")
 
 
+def test_validate_example_rejects_empty_image_path_name() -> None:
+    example = TrainingExample(
+        image_path=Path("."),
+        instruction="Open settings",
+        action_label="click_settings",
+    )
+
+    try:
+        validate_example(example)
+    except ValueError as exc:
+        assert "image_path" in str(exc)
+    else:
+        raise AssertionError("Expected ValueError for empty image path name")
+
+
 def test_validate_example_rejects_non_string_metadata_value() -> None:
     example = TrainingExample(
         image_path=Path("sandbox/screenshot.png"),
@@ -73,3 +88,19 @@ def test_validate_example_rejects_non_string_metadata_value() -> None:
         assert "metadata values" in str(exc)
     else:
         raise AssertionError("Expected ValueError for non-string metadata value")
+
+
+def test_validate_example_rejects_blank_metadata_key() -> None:
+    example = TrainingExample(
+        image_path=Path("sandbox/screenshot.png"),
+        instruction="Open the settings menu",
+        action_label="click_settings",
+        metadata={"   ": "manual"},
+    )
+
+    try:
+        validate_example(example)
+    except ValueError as exc:
+        assert "metadata keys" in str(exc)
+    else:
+        raise AssertionError("Expected ValueError for blank metadata key")
