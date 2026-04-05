@@ -25,3 +25,8 @@ def test_prepare_capture_session_rejects_non_manual_policy(
 
     with pytest.raises(RuntimeError, match="manual-only"):
         recorder.prepare_capture_session(tmp_path / "session")
+
+
+def test_record_example_is_not_implemented() -> None:
+    with pytest.raises(NotImplementedError, match="user-approved capture flow"):
+        recorder.record_example()

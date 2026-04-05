@@ -26,6 +26,12 @@ python -m pip install --upgrade pip
 pip install -e .
 ```
 
+## Validation
+
+```powershell
+python -m pytest
+```
+
 ## Project Layout
 
 ```text

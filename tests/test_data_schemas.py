@@ -6,7 +6,7 @@ from data.schemas import TrainingExample, validate_example
 def test_validate_example_accepts_valid_sample() -> None:
     example = TrainingExample(
         image_path=Path("sandbox/screenshot.png"),
-        instruction="Open the settings menu",
+        instruction="Open settings",
         action_label="click_settings",
         metadata={"source": "manual"},
     )
@@ -17,7 +17,7 @@ def test_validate_example_accepts_valid_sample() -> None:
 def test_validate_example_rejects_empty_instruction() -> None:
     example = TrainingExample(
         image_path=Path("sandbox/screenshot.png"),
-        instruction="   ",
+        instruction=" ",
         action_label="click_settings",
     )
 
@@ -32,8 +32,8 @@ def test_validate_example_rejects_empty_instruction() -> None:
 def test_validate_example_rejects_empty_action_label() -> None:
     example = TrainingExample(
         image_path=Path("sandbox/screenshot.png"),
-        instruction="Open the settings menu",
-        action_label="  ",
+        instruction="Open settings",
+        action_label=" ",
     )
 
     try:
@@ -47,7 +47,7 @@ def test_validate_example_rejects_empty_action_label() -> None:
 def test_validate_example_rejects_invalid_image_path_type() -> None:
     example = TrainingExample(
         image_path="sandbox/screenshot.png",  # type: ignore[arg-type]
-        instruction="Open the settings menu",
+        instruction="Open settings",
         action_label="click_settings",
     )
 
@@ -62,7 +62,7 @@ def test_validate_example_rejects_invalid_image_path_type() -> None:
 def test_validate_example_rejects_non_string_metadata_value() -> None:
     example = TrainingExample(
         image_path=Path("sandbox/screenshot.png"),
-        instruction="Open the settings menu",
+        instruction="Open settings",
         action_label="click_settings",
         metadata={"turn": 1},  # type: ignore[dict-item]
     )

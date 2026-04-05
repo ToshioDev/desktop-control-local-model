@@ -1,5 +1,5 @@
-from capture.policy import CapturePolicy
 from capture import recorder
+from capture.policy import CapturePolicy
 
 
 def test_prepare_capture_session_creates_directory(tmp_path) -> None:
@@ -12,7 +12,7 @@ def test_prepare_capture_session_creates_directory(tmp_path) -> None:
     assert target.is_dir()
 
 
-def test_prepare_capture_session_blocks_when_policy_not_manual(monkeypatch) -> None:
+def test_prepare_capture_session_blocks_non_manual_policy(monkeypatch) -> None:
     monkeypatch.setattr(recorder, "DEFAULT_CAPTURE_POLICY", CapturePolicy(manual_only=False))
 
     try:
@@ -23,7 +23,7 @@ def test_prepare_capture_session_blocks_when_policy_not_manual(monkeypatch) -> N
         raise AssertionError("Expected RuntimeError when manual_only is False")
 
 
-def test_record_example_is_explicitly_not_implemented() -> None:
+def test_record_example_is_not_implemented() -> None:
     try:
         recorder.record_example()
     except NotImplementedError as exc:
