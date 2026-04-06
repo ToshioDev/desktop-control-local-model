@@ -70,3 +70,73 @@ def test_load_dataset_manifest_rejects_invalid_example_fields(tmp_path: Path) ->
         assert "instruction" in str(exc)
     else:
         raise AssertionError("Expected ValueError for invalid example fields")
+
+
+def test_load_dataset_manifest_rejects_non_string_instruction(tmp_path: Path) -> None:
+    manifest = tmp_path / "manifest.jsonl"
+    bad_record = {
+        "image_path": "images/shot-001.png",
+        "instruction": 42,
+        "action_label": "click_settings",
+    }
+    manifest.write_text(json.dumps(bad_record) + "\n", encoding="utf-8")
+
+    try:
+        load_dataset_manifest(manifest)
+    except ValueError as exc:
+        assert "instruction must be a string" in str(exc)
+    else:
+        raise AssertionError("Expected ValueError for non-string instruction")
+
+
+def test_load_dataset_manifest_rejects_blank_image_path(tmp_path: Path) -> None:
+    manifest = tmp_path / "manifest.jsonl"
+    bad_record = {
+        "image_path": "   ",
+        "instruction": "Open settings",
+        "action_label": "click_settings",
+    }
+    manifest.write_text(json.dumps(bad_record) + "\n", encoding="utf-8")
+
+    try:
+        load_dataset_manifest(manifest)
+    except ValueError as exc:
+        assert "image_path must be non-empty" in str(exc)
+    else:
+        raise AssertionError("Expected ValueError for blank image_path")
+
+
+def test_load_dataset_manifest_checks_file_existence_in_smoke_mode(tmp_path: Path) -> None:
+    manifest = tmp_path / "manifest.jsonl"
+    record = {
+        "image_path": "images/shot-001.png",
+        "instruction": "Open settings",
+        "action_label": "click_settings",
+    }
+    manifest.write_text(json.dumps(record) + "\n", encoding="utf-8")
+
+    try:
+        load_dataset_manifest(manifest, require_image_files=True)
+    except ValueError as exc:
+        assert "image file not found" in str(exc)
+    else:
+        raise AssertionError("Expected ValueError for missing image file in smoke mode")
+
+
+def test_load_dataset_manifest_accepts_existing_file_in_smoke_mode(tmp_path: Path) -> None:
+    manifest = tmp_path / "manifest.jsonl"
+    images_dir = tmp_path / "images"
+    images_dir.mkdir()
+    image_path = images_dir / "shot-001.png"
+    image_path.write_bytes(b"fake-image")
+    record = {
+        "image_path": "images/shot-001.png",
+        "instruction": "Open settings",
+        "action_label": "click_settings",
+    }
+    manifest.write_text(json.dumps(record) + "\n", encoding="utf-8")
+
+    examples = load_dataset_manifest(manifest, require_image_files=True)
+
+    assert len(examples) == 1
+    assert examples[0].image_path == image_path
