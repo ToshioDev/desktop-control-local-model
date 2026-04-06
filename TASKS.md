@@ -13,5 +13,5 @@
 ## Testing
 
 - [ ] Implementar tests de policy/refusal.
-- [ ] Implementar validación de dataset.
+- [x] Implementar validación de dataset.
 - [ ] Implementar smoke tests de sincronía.
