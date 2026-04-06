@@ -14,7 +14,11 @@ def dataset_root(root: str | Path = "data") -> Path:
     return Path(root)
 
 
-def load_dataset_manifest(manifest_path: str | Path) -> list[TrainingExample]:
+def load_dataset_manifest(
+    manifest_path: str | Path,
+    *,
+    require_image_files: bool = False,
+) -> list[TrainingExample]:
     """Load and validate training examples from a local JSONL manifest.
 
     Each non-empty line in the manifest must be a JSON object with:
@@ -56,10 +60,21 @@ def load_dataset_manifest(manifest_path: str | Path) -> list[TrainingExample]:
 
         if not isinstance(image_path, str):
             raise ValueError(f"Manifest line {line_number} image_path must be a string")
+        if not image_path.strip():
+            raise ValueError(f"Manifest line {line_number} image_path must be non-empty")
+        if not isinstance(instruction, str):
+            raise ValueError(f"Manifest line {line_number} instruction must be a string")
+        if not isinstance(action_label, str):
+            raise ValueError(f"Manifest line {line_number} action_label must be a string")
 
         image_path_obj = Path(image_path)
         if not image_path_obj.is_absolute():
             image_path_obj = path.parent / image_path_obj
+
+        if require_image_files and not image_path_obj.is_file():
+            raise ValueError(
+                f"Manifest line {line_number} image file not found: {image_path_obj}"
+            )
 
         example = TrainingExample(
             image_path=image_path_obj,
