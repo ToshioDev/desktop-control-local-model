@@ -1,0 +1,8 @@
+# Manual capture configuration stub.
+# TODO: Define only safe, opt-in capture parameters.
+
+capture:
+  enabled: false
+  mode: manual_only
+  output_subdir: raw
+  save_debug_metadata: true
